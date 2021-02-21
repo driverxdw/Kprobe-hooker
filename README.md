@@ -21,10 +21,17 @@ Use kprobe capture common kernel events and can also use for hids agent（kernel
     'pid_tree':'1(systemd)->1244(sshd)->1453(sshd)->1611(bash)->8733(bash)->8734(bash)->8736(awk)',
     'stdin':'/dev/pts/3',
     'stdout':'/dev/pts/3',
+<<<<<<< HEAD
     'srcip':'',
     'dstip':'',
     'srcport':'',
     'dstport':'',
+=======
+    'srcip':'10.211.55.2',
+    'dstip':'10.211.55.21',
+    'srcport':'62589',
+    'dstport':'22',
+>>>>>>> bc5cd5e... kprobe-hooker第一次上传
     'tty':'pts3',
     'unixtime':'0'
 }
