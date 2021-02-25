@@ -8,25 +8,20 @@ Use kprobe capture common kernel events and can also use for hids agent（kernel
 ## Execve Event
 ```
 {
-    'evt':'execve',
-    'pid':'8736',
-    'exe':'/usr/bin/awk',
-    'cmdline':'awk',
-    'cwd':'/root/Kprobe-hooker',
-    'ppid':'19255',
-    'pexe':'8734',
-    'pcmdline':'awk',
-    'uid':'0',
-    'pname':'bash',
-    'pid_tree':'1(systemd)->1244(sshd)->1453(sshd)->1611(bash)->8733(bash)->8734(bash)->8736(awk)',
-    'stdin':'/dev/pts/3',
-    'stdout':'/dev/pts/3',
-    'srcip':'10.211.55.2',
-    'dstip':'10.211.55.21',
-    'srcport':'62589',
-    'dstport':'22',
-    'tty':'pts3',
-    'unixtime':'0'
+  'evt':'execve',
+  'pid':7477,
+  'exe':/bin/bash,
+  'cmdline':rmmod Kprobe_hooker ,
+  'cwd':/usr/local/Kprobe-hooker,
+  'ppid':2142,
+  'pexe':/bin/bash,
+  'pcomm':bash,
+  'uid':0,
+  'comm':rmmod,
+  'pid_tree':1(systemd)->1223(sshd)->2061(sshd)->2142(bash)->7477(rmmod),
+  'tty':pts1,
+  'stdin':/dev/pts/1,
+  'stdout':/dev/pts/1
 }
 ```
 
@@ -49,18 +44,22 @@ root@eBPF:/usr/local/Kprobe-hooker# rmmod Kprobe_hooker # uninstall lkm
 
 root@eBPF:/usr/local/Kprobe-hooker# dmesg # event show
 [ 1193.260895] planted return probe at sys_execve: 00000000200bdbd7
-[ 1193.262248] event_info:
+[  621.256485] event_info:
                {
-               'evt':'execve',
-               'pid':6761,
-               'exe':/bin/date,
-               'cmdline':date +%s ,
-               'cwd':/root/Kprobe-hooker,
-               'ppid':6760,
-               'uid':0,
-               'comm':date,
-               'pid_tree':1(systemd)->1221(sshd)->2121(sshd)->2202(bash)->6760(bash)->6761(date),
-               'tty':pts2
+               	'evt':'execve',
+               	'pid':7477,
+               	'exe':/bin/bash,
+               	'cmdline':rmmod Kprobe_hooker ,
+               	'cwd':/usr/local/Kprobe-hooker,
+               	'ppid':2142,
+               	'pexe':/bin/bash,
+               	'pcomm':bash,
+               	'uid':0,
+               	'comm':rmmod,
+               	'pid_tree':1(systemd)->1223(sshd)->2061(sshd)->2142(bash)->7477(rmmod),
+               	'tty':pts1,
+               	'stdin':/dev/pts/1,
+               	'stdout':/dev/pts/1
                }
 ```
 
