@@ -113,6 +113,7 @@ char *get_cwd(void){
     pname_buf = kzalloc(PATH_MAX,GFP_ATOMIC);
     if (unlikely(!pname_buf))
         return "-1";
+    cwd = kzalloc(PATH_MAX,GFP_ATOMIC);
     cwd = d_path(&pwd,pname_buf,PATH_MAX);
     kfree(pname_buf);
     return cwd;
@@ -188,17 +189,43 @@ static int entry_handler(struct kretprobe_instance *ri,struct pt_regs *regs){
     return 0;
 }
 
+char *get_p_exe_file(struct task_struct *task, char *buffer, int size) {
+    char *exe_file_str = NULL;
+    if (unlikely(!buffer)) {
+        exe_file_str = "-1";
+        return exe_file_str;
+    }
+    if (likely(task->mm)) {
+        if (likely(task->parent->mm->exe_file)) {
+            char pathname[PATH_MAX];
+            memset(pathname, 0, PATH_MAX);
+            exe_file_str = d_path(&task->parent->mm->exe_file->f_path, buffer, size);
+        }
+    }
+    if (unlikely(IS_ERR(exe_file_str))) {
+        exe_file_str = "-1";
+    }
+    return exe_file_str;
+}
+
 static int ret_handler(struct kretprobe_instance *ri,struct pt_regs *regs){
-    int uid,pid,ppid,result_str_len;
-    char *cwd;
-    char *comm = "-1";
+    int uid,pid,ppid,result_str_len=0;
+    char *cwd = NULL;
+    char *comm = NULL;
     struct tty_struct *tty;
     char *tty_name = "-1";
     char *buffer = NULL;
+    // char *buffer_2 = NULL;
     char *abs_path = NULL;
     struct task_struct *task;
     char *result_str = NULL;
-    char *pid_tree = NULL;
+    char *pid_tree = "-1";
+    char *stdin = "-1";
+    char *stdout = "-1";
+    char *pexe = NULL;
+    char *pcomm = NULL;
+    char *ret_buffer = "-1";
+    struct fdtable *files;
 
     task = current;
     comm = str_replace(current->comm,"\n"," ");
@@ -224,18 +251,49 @@ static int ret_handler(struct kretprobe_instance *ri,struct pt_regs *regs){
     // pr_info("exe:%s\n",abs_path);
     uid = current->real_cred->uid.val;
     // pr_info("uid:%d\n",uid);
-    cwd = get_cwd();
-    // pr_info("cwd:%s\n",cwd);
     pid = current->pid;
     // pr_info("pid:%d\n",pid);
     ppid = current->real_parent->pid;
     // pr_info("ppid:%d\n",ppid);
-    result_str_len = strlen(argv_res) + strlen(comm) + strlen(abs_path) + strlen(pid_tree) + strlen(cwd) + 256;
+    pcomm = str_replace(current->real_parent->comm,"\n"," ");
+    // pr_info("ppid:%s?\n",pcomm);
+    // buffer_2 = kzalloc(PATH_MAX, GFP_ATOMIC);
+    pexe = get_p_exe_file(task,buffer,PATH_MAX);
+    // pr_info("exe:%s?\n",pexe);
+    ret_buffer = kzalloc(PATH_MAX,GFP_ATOMIC);
+    files = files_fdtable(task->files);
+    // ret_buffer = kzalloc(PATH_MAX,GFP_ATOMIC);
+    stdin = kzalloc(PATH_MAX,GFP_ATOMIC);
+    stdin = d_path(&(files->fd[0]->f_path),ret_buffer,PATH_MAX);
+    stdout = kzalloc(PATH_MAX,GFP_ATOMIC);
+    stdout = d_path(&(files->fd[1]->f_path),ret_buffer,PATH_MAX);
+    // pr_info("stdin:%s stdout:%s\n",stdin,stdout);
+    cwd = get_cwd();
+    // pr_info("cwd:%s\n",cwd);
+    result_str_len = strlen(argv_res) + strlen(comm) + strlen(abs_path) + strlen(pid_tree) + strlen(cwd) + strlen(tty_name) +strlen(pcomm) 
+    + strlen(pexe) + strlen(stdin) + strlen(stdout) + 256;
     // pr_info("test_len:%d\n",result_str_len);
     result_str = kzalloc(result_str_len, GFP_ATOMIC);
     snprintf(result_str,result_str_len,"\n{\n\t'evt':'execve',\n\t'pid':%d,\n\t'exe':%s,\n\t'cmdline':%s,\n\t'cwd':%s,\n\t'ppid':%d,\n\t\
-'uid':%d,\n\t'comm':%s,\n\t'pid_tree':%s,\n\t'tty':%s\n}\n",pid,abs_path,argv_res,cwd,ppid,uid,comm,pid_tree,tty_name);
+'pexe':%s,\n\t'pcomm':%s,\n\t'uid':%d,\n\t'comm':%s,\n\t'pid_tree':%s,\n\t'tty':%s,\n\t'stdin':%s,\n\t'stdout':%s\n}\n",pid,\
+abs_path,argv_res,cwd,ppid,pexe,pcomm,uid,comm,pid_tree,tty_name,stdin,stdout);
     evt_fmt(result_str);
+    // if(likely(buffer))
+    //     kfree(buffer);
+    // if(likely(abs_path))
+    //     kfree(abs_path);
+    // if(likely(result_str))
+    //     kfree(result_str);
+    // if(likely(pid_tree))
+    //     kfree(pid_tree);
+    // if(likely(stdin))
+    //     kfree(stdin);
+    // if(likely(stdout))
+    //     kfree(stdout);
+    // if(likely(pexe))
+    //     kfree(pexe);
+    // if(likely(pcomm))
+    //     kfree(pcomm);
     return 0;
 }
 

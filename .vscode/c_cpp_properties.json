@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include",
+                "/usr/local/include",
+                "/usr/lib/gcc/x86_64-linux-gnu/7.5.0/include",
+                "/lib/modules/4.15.0-20-generic/build/arch/x86/include/",
+                "/lib/modules/4.15.0-20-generic/build/include/",
+                "/usr/src/linux-headers-4.15.0-20/include/**",
+                "/usr/src/linux-headers-4.15.0-20-generic/include/**",
+                "/usr/src/linux-headers-4.15.0-20/arch/x86/include/**",
+                "/usr/src/linux-headers-4.15.0-20-generic/arch/x86/include/**",
+                "/usr/src/linux-headers-4.15.0-20/arch/x86/include/asm/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
+// {
+//     "configurations": [
+//         {
+//             "name": "Linux",
+//             "includePath": [
+//                 "${workspaceFolder}/**",
+//                 "/usr/include/",
+//                 "/usr/local/include/",
+//                 "/usr/lib/gcc/x86_64-linux-gnu/7.5.0/include",
+//                 "/lib/modules/4.15.0-20-generic/build/arch/x86/include/",
+//                 "/lib/modules/4.15.0-20-generic/build/include/",
+//                 "/usr/src/linux-headers-4.15.0-20/include/",
+//                 "/usr/src/linux-headers-4.15.0-20-generic/include/",
+//                 "/usr/src/linux-headers-4.15.0-20/arch/x86/include/**",
+//                 "/usr/src/linux-headers-4.15.0-20-generic/arch/x86/include/**",
+//                 "/usr/src/linux-headers-4.15.0-20/arch/x86/include/asm/"
+//             ],
+//             "defines": [],
+//             "compilerPath": "/usr/bin/clang",
+//             "cStandard": "c11",
+//             "cppStandard": "c++14",
+//             "intelliSenseMode": "clang-x64"
+//         }
+//     ],
+//     "version": 4
+// }
