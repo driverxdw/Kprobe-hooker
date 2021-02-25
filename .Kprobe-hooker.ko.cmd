@@ -1,1 +1,0 @@
-cmd_/usr/local/Kprobe-hooker/Kprobe-hooker.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /usr/local/Kprobe-hooker/Kprobe-hooker.ko /usr/local/Kprobe-hooker/Kprobe-hooker.o /usr/local/Kprobe-hooker/Kprobe-hooker.mod.o ;  true
